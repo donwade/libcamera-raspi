@@ -1254,6 +1254,8 @@ int V4L2Subdevice::getFormat(const Stream &stream, V4L2SubdeviceFormat *format,
 	subdevFmt.pad = stream.pad;
 	subdevFmt.stream = stream.stream;
 
+	LOG(V4L2, Warning) << "dwade - tring to get width/heigth etc";
+
 	int ret = ioctl(VIDIOC_SUBDEV_G_FMT, &subdevFmt);
 	if (ret) {
 		LOG(V4L2, Error)

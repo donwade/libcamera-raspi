@@ -333,10 +333,14 @@ done:
  */
 MediaEntity *MediaDevice::getEntityByName(const std::string &name) const
 {
+	LOG(MediaDevice, Warning) << "dwade -looking for name " << name;
 	for (MediaEntity *e : entities_)
+	{
+		LOG(MediaDevice, Warning) << "dwade -    test " << e->name();
 		if (e->name() == name)
 			return e;
-
+	}
+	LOG(MediaDevice, Warning) << "dwade - missed" ;
 	return nullptr;
 }
 

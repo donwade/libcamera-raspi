@@ -89,10 +89,14 @@ int CameraSensor::init()
 			<< "Sensors with more than one pad are not supported";
 		return -EINVAL;
 	}
-
 	switch (entity_->function()) {
-	case MEDIA_ENT_F_CAM_SENSOR:
-	case MEDIA_ENT_F_PROC_VIDEO_ISP:
+		case MEDIA_ENT_F_VID_IF_BRIDGE:   //dwade
+		case MEDIA_ENT_F_CAM_SENSOR:
+		case MEDIA_ENT_F_PROC_VIDEO_ISP:
+			LOG(CameraSensor, Info)
+			<< "dwade- now accepting  VID_IF_BRIGE "
+			<< utils::hex(entity_->function());
+
 		break;
 
 	default:

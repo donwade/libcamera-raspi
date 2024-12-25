@@ -890,8 +890,14 @@ bool PipelineHandlerPiSP::match(DeviceEnumerator *enumerator)
 		 */
 		unsigned int numCameras = 0;
 		for (MediaEntity *entity : cfeDevice->entities()) {
-			if (entity->function() != MEDIA_ENT_F_CAM_SENSOR)
+			if (entity->function() != MEDIA_ENT_F_CAM_SENSOR
+				&& entity->function() != MEDIA_ENT_F_VID_IF_BRIDGE)
+			{
+				LOG(RPI, Debug) << "Dwade - didn't make it " << entity->function();
 				continue;
+			}
+
+			LOG(RPI, Debug) << "Dwade - now allowing register of MEDIA_ENT_F_VID_IF_BRIDGE !!! "<< entity->function();
 
 			const libpisp::PiSPVariant &variant =
 				libpisp::get_variant(cfeDevice->hwRevision(),
@@ -1127,7 +1133,14 @@ int PipelineHandlerPiSP::platformRegister(std::unique_ptr<RPi::CameraData> &came
 	for (auto stream : data->streams_) {
 		ret = stream->dev()->open();
 		if (ret)
+		{
+			LOG(RPI, Info) << "dwade- EARLY EXIT Registered camera " << data->sensor_->id()
+				       << " to CFE device " << cfe->deviceNode()
+				       << " and ISP device " << isp->deviceNode()
+				       << " using PiSP variant " << data->pispVariant_.Name();
+
 			return ret;
+		}
 	}
 
 	/* Write up all the IPA connections. */
