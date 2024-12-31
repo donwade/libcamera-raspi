@@ -93,6 +93,7 @@ int CameraSensor::init()
 	switch (entity_->function()) {
 	case MEDIA_ENT_F_CAM_SENSOR:
 	case MEDIA_ENT_F_PROC_VIDEO_ISP:
+	case MEDIA_ENT_F_VID_IF_BRIDGE:
 		break;
 
 	default:
