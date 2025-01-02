@@ -1673,18 +1673,32 @@ std::vector<unsigned int> V4L2Subdevice::enumPadCodes(const Stream &stream)
 		mbusEnum.which = V4L2_SUBDEV_FORMAT_ACTIVE;
 
 		ret = ioctl(VIDIOC_SUBDEV_ENUM_MBUS_CODE, &mbusEnum);
+
+		LOG(V4L2, Debug) << "p=" << mbusEnum.pad << " s=" << mbusEnum.stream <<
+			" i=" << mbusEnum.index << " w=" << mbusEnum.which <<
+			" code=" << mbusEnum.code << " ret=" << ret;
+
+
 		if (ret)
 			break;
 
 		codes.push_back(mbusEnum.code);
+		LOG(V4L2, Debug) << "count=" << codes.size();
+
 	}
+
+	LOG(V4L2, Debug) << "note : -EINVAL=" << -EINVAL;
 
 	if (ret < 0 && ret != -EINVAL) {
 		LOG(V4L2, Error)
-			<< "Unable to enumerate formats on pad " << stream
-			<< ": " << strerror(-ret);
+			<< "EARLY RETURN Unable to enumerate format on pad " << stream.pad
+			<< ": ret= " << strerror(-ret);
+
 		return {};
 	}
+
+	LOG(V4L2, Debug) << "nice exit, returning " << codes.size() << " items";
+
 
 	return codes;
 }
@@ -1694,18 +1708,24 @@ std::vector<SizeRange> V4L2Subdevice::enumPadSizes(const Stream &stream,
 {
 	std::vector<SizeRange> sizes;
 	int ret;
-
-	for (unsigned int index = 0;; index++) {
+	code=0;
+	unsigned int index = 0;
+	for (index = 0;; index++) {
 		struct v4l2_subdev_frame_size_enum sizeEnum = {};
-		sizeEnum.index = index;
-		sizeEnum.pad = stream.pad;
-		sizeEnum.stream = stream.stream;
-		sizeEnum.code = code;
+		sizeEnum.index = index; //0x55555555; //index;
+		sizeEnum.pad = stream.pad; //0x99999999; //stream.pad;
+		sizeEnum.stream = stream.stream; //0x44444444; //stream.stream;
+		sizeEnum.code = code; //0x22222222; //code;
 		sizeEnum.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+
+		LOG(V4L2, Warning) << "s="    << sizeEnum.stream << " p=" << sizeEnum.pad << " i=" << sizeEnum.index;
 
 		ret = ioctl(VIDIOC_SUBDEV_ENUM_FRAME_SIZE, &sizeEnum);
 		if (ret)
 			break;
+
+		LOG(V4L2, Warning) << "width="    << sizeEnum.min_width << "/" << sizeEnum.max_width
+		                << "  height=" << sizeEnum.min_height<< "/" << sizeEnum.max_height;
 
 		sizes.emplace_back(Size{ sizeEnum.min_width, sizeEnum.min_height },
 				   Size{ sizeEnum.max_width, sizeEnum.max_height });

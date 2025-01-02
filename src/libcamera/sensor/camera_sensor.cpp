@@ -94,6 +94,8 @@ int CameraSensor::init()
 	case MEDIA_ENT_F_CAM_SENSOR:
 	case MEDIA_ENT_F_PROC_VIDEO_ISP:
 	case MEDIA_ENT_F_VID_IF_BRIDGE:
+		LOG(CameraSensor, Warning)
+			<< "dwade - allowing function MEDIA_ENT_F_VID_IF_BRIDGE";
 		break;
 
 	default:

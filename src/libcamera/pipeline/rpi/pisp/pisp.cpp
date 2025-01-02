@@ -889,8 +889,11 @@ bool PipelineHandlerPiSP::match(DeviceEnumerator *enumerator)
 		 * used simultaneously.
 		 */
 		unsigned int numCameras = 0;
+		unsigned int fn = 0;
 		for (MediaEntity *entity : cfeDevice->entities()) {
-			if (entity->function() != MEDIA_ENT_F_CAM_SENSOR)
+			fn = entity->function();
+			if ((fn != MEDIA_ENT_F_CAM_SENSOR) &&
+			   (fn != MEDIA_ENT_F_VID_IF_BRIDGE))
 				continue;
 
 			const libpisp::PiSPVariant &variant =

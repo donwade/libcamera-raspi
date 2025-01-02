@@ -96,12 +96,14 @@ bool DeviceMatch::match(const MediaDevice *device) const
 	if (driver_ != device->driver())
 		return false;
 
-	for (const std::string &name : entities_) {
+ 	for (const std::string &name : entities_) {
 		bool found = false;
 
 		for (const MediaEntity *entity : device->entities()) {
 			if (name == entity->name()) {
+				LOG(DeviceEnumerator, Debug) << "looking for " << name << " in " <<  entity->name();
 				if (!entity->deviceNode().empty()) {
+					LOG(DeviceEnumerator, Debug) << "not empty ... possible canditate " <<  entity->name();
 					found = true;
 					break;
 				} else {
