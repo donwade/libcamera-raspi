@@ -1708,14 +1708,13 @@ std::vector<SizeRange> V4L2Subdevice::enumPadSizes(const Stream &stream,
 {
 	std::vector<SizeRange> sizes;
 	int ret;
-	code=0;
 	unsigned int index = 0;
 	for (index = 0;; index++) {
 		struct v4l2_subdev_frame_size_enum sizeEnum = {};
-		sizeEnum.index = index; //0x55555555; //index;
-		sizeEnum.pad = stream.pad; //0x99999999; //stream.pad;
-		sizeEnum.stream = stream.stream; //0x44444444; //stream.stream;
-		sizeEnum.code = code; //0x22222222; //code;
+		sizeEnum.index = index;
+		sizeEnum.pad = stream.pad;
+		sizeEnum.stream = stream.stream;
+		sizeEnum.code = code;
 		sizeEnum.which = V4L2_SUBDEV_FORMAT_ACTIVE;
 
 		LOG(V4L2, Warning) << "s="    << sizeEnum.stream << " p=" << sizeEnum.pad << " i=" << sizeEnum.index;

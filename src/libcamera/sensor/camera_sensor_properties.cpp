@@ -298,6 +298,10 @@ const CameraSensorProperties *CameraSensorProperties::get(const std::string &sen
 				{ controls::draft::TestPatternModeColorBars, 1 },
 			},
 		} },
+		{ "tc358743", {
+			.unitCellSize = { 1080, 1080 },  // another guess :(
+			.testPatternModes = {},
+		} },
 	};
 
 	const auto it = sensorProps.find(sensor);
