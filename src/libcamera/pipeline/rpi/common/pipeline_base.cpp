@@ -1178,7 +1178,7 @@ int CameraData::loadIPA(ipa::RPi::InitResult *result)
 
 	ret = sensor_->sensorInfo(&params.sensorInfo);
 	if (ret) {
-		LOG(RPI, Error) << "Failed to retrieve camera sensor info";
+		LOG(RPI, Error) << "Failed to retrieve camera sensor info...looking for= " << configurationFile;
 		return ret;
 	}
 

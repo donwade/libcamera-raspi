@@ -1665,6 +1665,8 @@ std::vector<unsigned int> V4L2Subdevice::enumPadCodes(const Stream &stream)
 	std::vector<unsigned int> codes;
 	int ret;
 
+    LOG(V4L2, Warning) << "============enumPadCodes================";
+
 	for (unsigned int index = 0; ; index++) {
 		struct v4l2_subdev_mbus_code_enum mbusEnum = {};
 		mbusEnum.pad = stream.pad;
@@ -1693,8 +1695,7 @@ std::vector<unsigned int> V4L2Subdevice::enumPadCodes(const Stream &stream)
 		LOG(V4L2, Error)
 			<< "EARLY RETURN Unable to enumerate format on pad " << stream.pad
 			<< ": ret= " << strerror(-ret);
-
-		return {};
+		//return {}; //dwade
 	}
 
 	LOG(V4L2, Debug) << "nice exit, returning " << codes.size() << " items";
@@ -1709,6 +1710,8 @@ std::vector<SizeRange> V4L2Subdevice::enumPadSizes(const Stream &stream,
 	std::vector<SizeRange> sizes;
 	int ret;
 	unsigned int index = 0;
+    LOG(V4L2, Warning) << "-----------enumPadSizes-----------------";
+
 	for (index = 0;; index++) {
 		struct v4l2_subdev_frame_size_enum sizeEnum = {};
 		sizeEnum.index = index;
@@ -1717,17 +1720,20 @@ std::vector<SizeRange> V4L2Subdevice::enumPadSizes(const Stream &stream,
 		sizeEnum.code = code;
 		sizeEnum.which = V4L2_SUBDEV_FORMAT_ACTIVE;
 
-		LOG(V4L2, Warning) << "s="    << sizeEnum.stream << " p=" << sizeEnum.pad << " i=" << sizeEnum.index;
+		LOG(V4L2, Warning) << "s=" << sizeEnum.stream << " p=" << sizeEnum.pad << " i=" << sizeEnum.index << " code=" << sizeEnum.code;
 
 		ret = ioctl(VIDIOC_SUBDEV_ENUM_FRAME_SIZE, &sizeEnum);
 		if (ret)
+		{
+			LOG(V4L2, Warning) << "break early ret=" << ret;
 			break;
-
+		}
 		LOG(V4L2, Warning) << "width="    << sizeEnum.min_width << "/" << sizeEnum.max_width
 		                << "  height=" << sizeEnum.min_height<< "/" << sizeEnum.max_height;
 
 		sizes.emplace_back(Size{ sizeEnum.min_width, sizeEnum.min_height },
 				   Size{ sizeEnum.max_width, sizeEnum.max_height });
+		LOG(V4L2, Warning) << "sizes.size()=" << sizes.size();
 	}
 
 	if (ret < 0 && ret != -EINVAL && ret != -ENOTTY) {
@@ -1736,6 +1742,8 @@ std::vector<SizeRange> V4L2Subdevice::enumPadSizes(const Stream &stream,
 			<< ": " << strerror(-ret);
 		return {};
 	}
+
+	LOG(V4L2, Warning) << "returning " << sizes.size() << " items";
 
 	return sizes;
 }
